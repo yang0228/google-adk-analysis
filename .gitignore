@@ -1,0 +1,13 @@
+.venv/
+.venv-310/
+node_modules/
+.validation/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
