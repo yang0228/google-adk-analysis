@@ -1,0 +1,22 @@
+[project]
+name = "google-adk-explained"
+version = "0.1.0"
+description = "Source-grounded Chinese guide to Google ADK"
+requires-python = ">=3.10"
+dependencies = ["google-adk==2.10.0"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "pytest-asyncio>=1,<2", "pytest-socket>=0.7,<1", "ruff>=0.13,<1"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "--disable-socket --allow-unix-socket"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
