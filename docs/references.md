@@ -45,3 +45,21 @@
 - 主题：状态范围；类型：固定源码。
 - 来源：[sessions/state.py](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/sessions/state.py#L72)。
 - 验证：核对键值、delta 及三种前缀；限制：作用域不等于访问控制。
+
+## E-ADK-008
+
+- 主题：节点执行与队列；类型：固定源码。
+- 来源：[源码地图](architecture/source-map.md)中的 NodeRunner、Context、InvocationContext 与 Runner 消费队列入口；版本同本页基线。
+- 验证：逐跳读取调用链，并对照示例 01/03 实际事件；限制：未实测实时路径。
+
+## E-ADK-009
+
+- 主题：暂停与响应；类型：固定源码与本地测试。
+- 来源：[RequestInput](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/events/request_input.py#L28)、[解包实现](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/workflow/utils/_rehydration_utils.py#L100)。
+- 验证：[示例 04](../examples/04-human-in-the-loop/README.md)及其测试；限制：同进程本地动作，不证明外部事务恢复。
+
+## E-ADK-010
+
+- 主题：工具调用及会话隔离；类型：本地行为测试。
+- 来源：[工具测试](../tests/test_tool_agent.py)、[状态测试](../tests/test_session_state.py)、[路由测试](../tests/test_workflow_routing.py)、[审批测试](../tests/test_human_in_the_loop.py)。
+- 验证：真实 google-adk==2.10.0 Runner、工具和服务，替换模型响应；限制：默认内存后端，在线模型不在覆盖内。
