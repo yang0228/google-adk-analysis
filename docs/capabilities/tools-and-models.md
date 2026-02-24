@@ -22,6 +22,20 @@ v2.10.0 核心依赖包含 google-genai；OpenAI 适配器位于 google.adk.inte
 
 MCP 解决工具与资源接入；A2A 解决 Agent 间通信。把 MCP server 当子 Agent 使用会遗漏任务生命周期，把 A2A 当普通本地函数会遗漏网络与权限边界。[McpToolset](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/tools/mcp_tool/mcp_toolset.py#L116)、[RemoteA2aAgent](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/a2a/agent/_remote_a2a_agent.py#L625)
 
+## 代码执行器：执行什么、在哪里执行
+
+当任务需要临时计算或处理数据时，LlmAgent.code_executor 可接收 BaseCodeExecutor。框架从模型响应提取代码、交给执行器，再把执行结果接回模型上下文；普通 FunctionTool 则调用应用事先定义好的函数。[配置入口](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/agents/llm_agent.py#L484)、[执行器契约](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/code_executors/base_code_executor.py#L30)、[响应处理](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/flows/llm_flows/extensions/_code_execution.py#L199)
+
+| 执行方式 | 位置与机制 | 条件及边界 |
+| --- | --- | --- |
+| BuiltInCodeExecutor | 请求中启用模型提供商的代码执行工具 | 此版本针对 Gemini；可用模型与限制由提供商决定，需要在线调用 |
+| UnsafeLocalCodeExecutor | 本机 Python 子进程执行生成代码，收集标准输出、错误及退出码 | 继承本机环境，子进程与超时控制不构成安全沙箱；不支持 stateful=True |
+| ContainerCodeExecutor | 在 Docker 容器中执行代码 | 需要 Docker 服务与镜像，docker 依赖列于 extensions；默认禁用网络、移除 Linux capabilities，但应用仍需管理镜像、资源及运行边界 |
+
+表中机制分别来自 [BuiltIn](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/code_executors/built_in_code_executor.py#L31)、[UnsafeLocal](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/code_executors/unsafe_local_code_executor.py#L120)、[Container](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/code_executors/container_code_executor.py#L130)及[扩展依赖](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/pyproject.toml#L210)。需要云端环境时还可检查仓库中的 Vertex AI、GKE 与 Agent Engine 执行器；具体云 SDK、账号和隔离条件要按所选实现配置，不能从“支持代码执行”推导为默认已具备这些环境。
+
+上游[本地执行器测试](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/tests/unittests/code_executors/test_unsafe_local_code_executor.py#L114)展示输出、异常和超时等行为。本仓库只阅读这些实现和测试，没有执行生成代码、启动 Docker 或调用托管执行器；四个入门示例中的 Python 工具也不能作为这些执行环境的验证证据。
+
 ## 真实配置的限制
 
 本仓库没有连接 MCP/A2A 服务，也未调用任何真实提供商。扩展依赖的准确名称以[固定 pyproject](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/pyproject.toml#L58)为准；项目默认锁文件不包含这些可选集成。在线示例的配置检查只证明缺失 Key 或模型名时会及早退出，不证明该账号有模型访问权。
