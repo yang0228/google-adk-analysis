@@ -36,6 +36,16 @@ MCP 解决工具与资源接入；A2A 解决 Agent 间通信。把 MCP server �
 
 上游[本地执行器测试](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/tests/unittests/code_executors/test_unsafe_local_code_executor.py#L114)展示输出、异常和超时等行为。本仓库只阅读这些实现和测试，没有执行生成代码、启动 Docker 或调用托管执行器；四个入门示例中的 Python 工具也不能作为这些执行环境的验证证据。
 
+## 工具凭证怎样请求、返回和保存
+
+调用外部 API 的工具可能需要用户凭证。AuthConfig 描述认证方案与凭证；工具通过上下文 request_credential 把请求写进 EventActions.requested_auth_configs，按当前 function_call_id 关联。框架把它转换成 adk_request_credential 事件，客户端完成认证后以匹配 ID 的 FunctionResponse 返回。认证预处理器结合此前的请求解析响应，保存凭证并确定要恢复的原工具调用。[请求入口](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/agents/context.py#L669)、[认证事件](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/flows/llm_flows/tools/_functions.py#L174)、[响应与恢复](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/auth/auth_preprocessor.py#L87)
+
+AuthHandler 可执行必要的 token 交换，将响应写到 temp: 前缀状态；客户端可见的请求和会话中的凭证会移除 OAuth client secret，交换时从服务端工具配置补回。这个处理不等于移除用户 access/refresh token，更不等于已经实现应用业务权限。[AuthHandler](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/auth/auth_handler.py#L89)
+
+凭证的持续保存由所配置的 CredentialService 决定。上下文 save_credential/load_credential 在没有服务时会报错；CredentialManager 的自动保存也以服务存在为前提。InMemoryCredentialService 按 app/user 分桶且仅存内存；SessionStateCredentialService 存入会话状态，其用户 token 可以被有权读取该状态的客户端看到，不能当成加密凭证库。[服务接口](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/agents/context.py#L622)、[保存条件](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/auth/credential_manager.py#L404)、[内存实现](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/auth/credential_service/in_memory_credential_service.py#L31)、[会话实现](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/src/google/adk/auth/credential_service/session_state_credential_service.py#L34)
+
+authlib 属于此版本核心依赖，但 OAuth 客户端、回调接收、授权范围和凭证后端仍需配置。模型 API Key、工具访问令牌与应用用户授权是不同边界。本仓库核对了[上游凭证响应测试](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/tests/unittests/auth/test_auth_handler.py#L779)，未运行 OAuth 往返或外部工具认证；[审批示例](../../examples/04-human-in-the-loop/README.md)演示业务决定，不能代替认证流验证。
+
 ## 真实配置的限制
 
 本仓库没有连接 MCP/A2A 服务，也未调用任何真实提供商。扩展依赖的准确名称以[固定 pyproject](https://github.com/google/adk-python/blob/53b3706e04fab34d1d53808a5f62cfe9b025f893/pyproject.toml#L58)为准；项目默认锁文件不包含这些可选集成。在线示例的配置检查只证明缺失 Key 或模型名时会及早退出，不证明该账号有模型访问权。
