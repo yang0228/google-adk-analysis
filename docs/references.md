@@ -63,3 +63,15 @@
 - 主题：工具调用及会话隔离；类型：本地行为测试。
 - 来源：[工具测试](../tests/test_tool_agent.py)、[状态测试](../tests/test_session_state.py)、[路由测试](../tests/test_workflow_routing.py)、[审批测试](../tests/test_human_in_the_loop.py)。
 - 验证：真实 google-adk==2.10.0 Runner、工具和服务，替换模型响应；限制：默认内存后端，在线模型不在覆盖内。
+
+## E-ADK-011
+
+- 主题：能力依赖与限制；类型：固定源码。
+- 来源：[能力导航](capabilities/index.md)下各篇的精确入口与 pyproject 依赖声明；版本同 ADK 基线。
+- 验证：接口、依赖和配置条件阅读；限制：MCP、A2A、实时、评估和云部署未在线执行。
+
+## E-ADK-012
+
+- 主题：代码执行与工具凭证；类型：固定源码与上游测试阅读。
+- 来源：[执行器及认证机制](capabilities/tools-and-models.md)的逐项固定行号引用；版本同 ADK 基线。
+- 验证：核对执行位置、依赖、凭证请求和保存边界；限制：未运行生成代码、Docker、托管执行器或 OAuth 往返。
