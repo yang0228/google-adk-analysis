@@ -64,6 +64,12 @@
 - 来源：[工具测试](../tests/test_tool_agent.py)、[状态测试](../tests/test_session_state.py)、[路由测试](../tests/test_workflow_routing.py)、[审批测试](../tests/test_human_in_the_loop.py)。
 - 验证：真实 google-adk==2.10.0 Runner、工具和服务，替换模型响应；限制：默认内存后端，在线模型不在覆盖内。
 
+## E-COMP-001
+
+- 主题：五框架统一比较；类型：固定官方源码与文档、滚动官方站点。
+- 来源与版本：[比较基线和来源组](comparison/framework-tradeoffs.md#比较口径与版本)。核查日期：2026-09-29。
+- 验证：GitHub release/tag 解引用、固定文档与源码阅读；限制：竞品未安装实测，无性能或费用结论。
+
 ## E-ADK-011
 
 - 主题：能力依赖与限制；类型：固定源码。
