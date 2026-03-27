@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ADK 上游问题
+    url: https://github.com/google/adk-python/issues
+    about: ADK 本身的缺陷请先检查上游记录；本仓库处理分析内容和示例。

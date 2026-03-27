@@ -1,0 +1,25 @@
+name: 内容错误
+description: 报告有证据支持的事实、链接或示例错误
+title: "[内容错误] "
+body:
+  - type: textarea
+    id: location
+    attributes:
+      label: 错误位置
+      description: 文件路径、章节及当前描述。
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 分析版本与本地环境
+      placeholder: ADK 版本、Python 版本、操作系统
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 预期、实际和证据
+      description: 提供固定源码链接或最小复现；不要粘贴凭证。
+    validations:
+      required: true

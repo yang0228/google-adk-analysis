@@ -1,0 +1,18 @@
+name: 内容建议
+description: 建议更清晰的解释或新的分析主题
+title: "[内容建议] "
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: 读者问题与收益
+      description: 谁遇到什么困难，当前文档缺少什么？
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议内容和参考依据
+      description: 附相关章节、官方来源或示例场景。
+    validations:
+      required: true
