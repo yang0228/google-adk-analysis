@@ -508,7 +508,7 @@ wheels = [
 ]
 
 [[package]]
-name = "google-adk-explained"
+name = "google-adk-analysis"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

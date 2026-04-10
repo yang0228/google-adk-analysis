@@ -1,6 +1,6 @@
 # 贡献指南
 
-欢迎修正文档事实、改进解释或补充可复现示例。当前仓库仅在本地准备，GitHub 模板是未来发布时使用的配置。
+欢迎修正文档事实、改进解释或补充可复现示例。请使用本仓库的 [Issue](https://github.com/yang0228/google-adk-analysis/issues) 或 [Pull Request](https://github.com/yang0228/google-adk-analysis/pulls) 提交建议与变更。
 
 ## 内容标准
 
@@ -36,6 +36,6 @@ git diff --check
 
 ## 提出变更
 
-说明读者遇到的问题、修改后行为、版本依据和验证。事实纠错附准确路径及源码链接；示例修改附输入、实际/预期结果。GitHub 发布后可使用仓库自身 Issue/PR 模板；上游 ADK 产品缺陷应先核对[官方 Issue](https://github.com/google/adk-python/issues)。
+说明读者遇到的问题、修改后行为、版本依据和验证。事实纠错附准确路径及源码链接；示例修改附输入、实际/预期结果。可使用仓库自身 Issue/PR 模板；上游 ADK 产品缺陷应先核对[官方 Issue](https://github.com/google/adk-python/issues)。
 
 不要附 Key、私有会话或未经许可的数据。遵循[行为准则](CODE_OF_CONDUCT.md)；新增材料按[来源规则](THIRD_PARTY_NOTICES.md)署名。贡献以本仓库 [Apache-2.0](LICENSE) 许可提供，请确认你有权提交相应内容。

@@ -1,10 +1,10 @@
-# Google ADK 源码剖析
+# Google ADK Analysis · 源码剖析
 
 **从一条请求出发，读懂 Agent、工具、状态和工作流。**
 
 这是一个面向 Python 开发者与技术选型者的中文学习仓库。通过固定版本源码、三张架构图和四个可运行示例，解释 Google Agent Development Kit 是什么、怎样执行、适合什么场景，以及真正使用时还缺哪些工程环节。阅读目标是能找到代码入口、解释一次运行，并作出有依据的选型判断。
 
-本项目是独立社区分析，不隶属于 Google，不替代官方文档。分析基线为 **ADK v2.10.0**，提交 `53b3706e04fab34d1d53808a5f62cfe9b025f893`；源码与竞品资料核查日期为 **2026-09-29**。后续版本行为可能变化，请先看[证据索引](docs/references.md)。目前仅本地交付，尚未发布 GitHub 仓库。
+本项目是独立社区分析，不隶属于 Google，不替代官方文档。分析基线为 **ADK v2.10.0**，提交 `53b3706e04fab34d1d53808a5f62cfe9b025f893`；源码与竞品资料核查日期为 **2026-09-29**。后续版本行为可能变化，请先看[证据索引](docs/references.md)。项目仓库：[yang0228/google-adk-analysis](https://github.com/yang0228/google-adk-analysis)。
 
 ## 从哪里开始
 
@@ -73,6 +73,8 @@ ADK 的特色是把交互 Agent、显式工作流、统一事件、会话服务�
 准备 Python 3.12 和 [uv](https://docs.astral.sh/uv/getting-started/installation/)，在本仓库根目录运行。首次同步依赖需要网络；以下示例执行不需要模型 Key。
 
 ```sh
+git clone https://github.com/yang0228/google-adk-analysis.git
+cd google-adk-analysis
 uv sync --locked --python 3.12
 uv run python examples/01-tool-agent/main.py --offline
 uv run python examples/02-session-state/main.py --offline
