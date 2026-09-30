@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="904" viewBox="0 0 1000 904" role="img" aria-labelledby="title desc">
+  <title id="title">Google ADK：状态差量、事件提交与会话保存边界</title>
+  <desc id="desc">当前节点 Context 访问维护当前值与待提交 delta 的 State 视图；差量进入 Event.actions.state_delta，由 Runner 消费非 partial 事件并调用 SessionService.append_event。会话服务按 app:、user:、无前缀分别处理应用共享、同应用同用户共享和当前会话状态，并保存 Session 事件历史。temp: 值先应用到当前调用的 Session 内存，随后从持久化事件差量中移除。Context 显式调用 Memory 跨会话存取与检索，以及 Artifact 内容与版本服务；二者不会随普通 State 写入自动更新。分组不代表安全隔离。基线 ADK v2.10.0，提交 53b3706e。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#526781"/></marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Noto Sans CJK SC', sans-serif; }
+      .title { font-size: 28px; font-weight: 700; fill: #13243b; }
+      .label { font-size: 18px; font-weight: 600; fill: #13243b; }
+      .body { font-size: 16px; fill: #475569; }
+      .small { font-size: 16px; fill: #64748b; }
+      .line { fill: none; stroke: #526781; stroke-width: 2; marker-end: url(#arrow); }
+      .branch { fill: none; stroke: #526781; stroke-width: 2; }
+      .dashed { stroke-dasharray: 6 5; }
+    </style>
+  </defs>
+  <rect width="1000" height="904" rx="20" fill="#f8fafc"/>
+  <text x="36" y="40" font-size="13" font-weight="700" letter-spacing="2" fill="#2563eb">03 / STATE &amp; EVENTS</text>
+  <text x="36" y="77" class="title">状态如何成为事件与会话记录</text>
+  <text x="36" y="109" class="body">当前值与待提交差量同行，持久化范围由会话服务处理</text>
+
+  <rect x="36" y="148" width="162" height="92" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="117" y="182" text-anchor="middle" class="label">Context</text>
+  <text x="117" y="212" text-anchor="middle" class="body">当前节点上下文</text>
+  <path d="M 200 194 H 232" class="line"/>
+
+  <rect x="236" y="148" width="216" height="92" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="344" y="182" text-anchor="middle" class="label">State 视图</text>
+  <text x="344" y="212" text-anchor="middle" class="body">当前值 + 待提交 delta</text>
+  <path d="M 454 194 H 486" class="line"/>
+
+  <rect x="490" y="148" width="246" height="92" rx="12" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="613" y="182" text-anchor="middle" class="label">Event.actions</text>
+  <text x="613" y="212" text-anchor="middle" class="body">state_delta</text>
+  <path d="M 738 194 H 770" class="line"/>
+
+  <rect x="774" y="148" width="190" height="92" rx="12" fill="#2563eb"/>
+  <text x="869" y="182" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">Runner</text>
+  <text x="869" y="212" text-anchor="middle" font-size="16" fill="#dbeafe">消费非 partial 事件</text>
+  <path d="M 869 242 V 280 H 699 V 316" class="line"/>
+
+  <rect x="434" y="320" width="530" height="104" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="699" y="350" text-anchor="middle" class="label">SessionService.append_event</text>
+  <text x="699" y="378" text-anchor="middle" class="body">按前缀更新状态 · 追加事件</text>
+  <text x="699" y="405" text-anchor="middle" class="body">temp 先留在内存，再从持久化差量过滤</text>
+
+  <path d="M 117 242 V 350" class="line dashed"/>
+  <text x="137" y="296" class="body">显式调用服务</text>
+  <rect x="36" y="354" width="276" height="88" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="174" y="388" text-anchor="middle" class="label">Memory</text>
+  <text x="174" y="417" text-anchor="middle" class="body">跨会话存取与检索</text>
+
+  <path d="M 34 194 H 20 V 568 H 32" class="line dashed"/>
+  <text x="40" y="490" class="body">显式调用服务</text>
+  <rect x="36" y="524" width="276" height="88" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="174" y="558" text-anchor="middle" class="label">Artifact</text>
+  <text x="174" y="587" text-anchor="middle" class="body">内容保存与版本管理</text>
+  <text x="36" y="650" class="body">Memory / Artifact 独立调用</text>
+  <text x="36" y="678" class="body">不会随普通 State 写入自动更新</text>
+
+  <text x="358" y="465" class="label">状态持久化范围</text>
+  <path d="M 699 426 V 492 M 446 492 H 857" class="branch"/>
+  <path d="M 446 492 V 522" class="line"/>
+  <path d="M 641 492 V 522" class="line"/>
+  <path d="M 857 492 V 522" class="line"/>
+
+  <rect x="358" y="526" width="176" height="84" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="446" y="557" text-anchor="middle" class="label">app:</text>
+  <text x="446" y="586" text-anchor="middle" class="body">应用共享</text>
+  <rect x="552" y="526" width="178" height="84" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="641" y="557" text-anchor="middle" class="label">user:</text>
+  <text x="641" y="586" text-anchor="middle" class="body">同应用同用户共享</text>
+  <rect x="750" y="526" width="214" height="84" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="857" y="557" text-anchor="middle" class="label">无前缀</text>
+  <text x="857" y="586" text-anchor="middle" class="body">当前会话</text>
+
+  <path d="M 432 372 H 338 V 751 H 354" class="line dashed"/>
+  <text x="358" y="653" class="body">temp 值在当前调用内可见</text>
+  <rect x="358" y="694" width="272" height="114" rx="12" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="494" y="725" text-anchor="middle" class="label">temp: 当前调用内存</text>
+  <text x="494" y="756" text-anchor="middle" class="body">先应用到本轮 Session 内存</text>
+  <text x="494" y="785" text-anchor="middle" class="body">再过滤持久化事件差量</text>
+
+  <path d="M 966 372 H 982 V 751 H 968" class="line"/>
+  <text x="746" y="653" class="body">保存过滤后的事件</text>
+  <rect x="660" y="694" width="304" height="114" rx="12" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="812" y="725" text-anchor="middle" class="label">Session 事件历史</text>
+  <text x="812" y="756" text-anchor="middle" class="body">保存已过滤差量的事件</text>
+  <text x="812" y="785" text-anchor="middle" class="body">用于后续执行与恢复</text>
+
+  <text x="36" y="846" class="body">实线：状态提交 / 保存　　虚线：temp 内存值或显式服务调用</text>
+  <text x="36" y="879" class="small">基线 ADK v2.10.0 · 53b3706e · 分组不代表安全隔离</text>
+</svg>

@@ -50,6 +50,12 @@ git remote -v
 - 人工介入：先暂停且零动作；批准后一次本地动作，拒绝后零动作；无效决定被拒绝。
 - 真实模型配置缺失：工具与状态示例均在构造远程模型前退出，退出码 2。
 
+## 2026-09-30 图表样式更新
+
+总览、请求时序与状态边界改用自包含 SVG 展示，原三张 Mermaid 定义逐字保留在折叠区。配色与卡片样式参考 [DeepSeek Harness Analysis](https://github.com/yang0228/deepseek-harness-analysis/tree/main/assets/diagrams)，ADK 分析基线保持 v2.10.0。
+
+本次检查：32 个 Markdown 文件格式、内部链接与 Python 围栏通过，三张 Mermaid 实际渲染通过；三张 SVG 的 XML、可访问标题与说明、文字边界及卡片内边距检查通过。使用本机 Chrome 渲染并逐张查看截图，未发现文字裁切或连线遮挡。此项仅更新文档图表，没有重新运行 Python 示例或在线集成。
+
 ## 十项验收对照
 
 | 编号 | 交付证据 |

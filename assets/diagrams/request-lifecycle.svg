@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1150" viewBox="0 0 1400 1150" role="img" aria-labelledby="title desc">
+  <title id="title">从一条用户消息到工具结果：ADK 请求时序</title>
+  <desc id="desc">基于 ADK v2.10.0，提交 53b3706e，展示根 LlmAgent 的非实时 run_async 调用。六个参与者依次为应用、Runner、SessionService、节点与 LLM flow、BaseLlm、FunctionTool。十八步依次是：应用调用 run_async 传入用户消息；Runner 读取 Session 并保存用户事件；Runner 创建调用及节点 Context；节点向模型提交指令、历史、工具声明；模型返回 FunctionCall；调用事件进入 Runner 队列；Runner 保存非 partial 事件；Runner 向应用 yield 调用事件；节点向工具提交工具参数及 ToolContext；工具返回实际函数返回值；节点向 Runner 返回 FunctionResponse 事件；Runner 合并状态差量并记录事件；Runner 向应用 yield 工具结果；节点向模型发出包含工具结果的后续请求；模型返回最终文字；节点向 Runner 返回回答事件；Runner 保存回答；Runner 向应用 yield 回答并结束调用。图中折叠内部适配层，省略中间调度与插件事件；模型是可替换接口，示例使用确定性替身，模型不会直接执行 Python。此图不涵盖实时、取消或断线重连。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/></marker>
+    <marker id="save-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Noto Sans CJK SC', sans-serif; }
+      .title { font-size: 38px; font-weight: 700; fill: #13243b; }
+      .label { font-size: 24px; font-weight: 600; fill: #13243b; }
+      .body { font-size: 22px; fill: #334155; paint-order: stroke; stroke: #f8fafc; stroke-width: 6; stroke-linejoin: round; }
+      .note { font-size: 20px; fill: #64748b; }
+      .number { font-size: 20px; font-weight: 600; fill: #64748b; }
+      .line { fill: none; stroke: #2563eb; stroke-width: 2; marker-end: url(#arrow); }
+      .reply { stroke-dasharray: 5 4; }
+      .save { fill: none; stroke: #0f766e; stroke-width: 2; marker-end: url(#save-arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="1150" rx="20" fill="#f8fafc"/>
+  <text x="36" y="40" font-size="13" font-weight="700" letter-spacing="2" fill="#2563eb">02 / REQUEST LIFECYCLE</text>
+  <text x="36" y="77" class="title">从一条用户消息到工具结果</text>
+  <text x="36" y="111" class="note">ADK v2.10.0 · 53b3706e　｜　LlmAgent + run_async / 非实时</text>
+
+  <rect x="45" y="144" width="150" height="60" rx="10" fill="#e2e8f0"/>
+  <text x="120" y="181" text-anchor="middle" class="label">应用</text>
+  <rect x="255" y="144" width="170" height="60" rx="10" fill="#dbeafe"/>
+  <text x="340" y="181" text-anchor="middle" class="label">Runner</text>
+  <rect x="472" y="144" width="216" height="60" rx="10" fill="#ccfbf1"/>
+  <text x="580" y="181" text-anchor="middle" class="label">SessionService</text>
+  <rect x="710" y="144" width="220" height="60" rx="10" fill="#dbeafe"/>
+  <text x="820" y="181" text-anchor="middle" class="label">节点与 LLM flow</text>
+  <rect x="975" y="144" width="170" height="60" rx="10" fill="#e0e7ff"/>
+  <text x="1060" y="181" text-anchor="middle" class="label">BaseLlm</text>
+  <rect x="1190" y="144" width="180" height="60" rx="10" fill="#ecfdf5"/>
+  <text x="1280" y="181" text-anchor="middle" class="label">FunctionTool</text>
+
+  <g stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 5">
+    <path d="M 120 208 V 1040"/><path d="M 340 208 V 1040"/>
+    <path d="M 580 208 V 1040"/><path d="M 820 208 V 1040"/>
+    <path d="M 1060 208 V 1040"/><path d="M 1280 208 V 1040"/>
+  </g>
+
+  <text x="36" y="243" class="number">01</text>
+  <path d="M 120 254 H 338" class="line"/>
+  <text x="230" y="243" text-anchor="middle" class="body">run_async 用户消息</text>
+
+  <text x="36" y="287" class="number">02</text>
+  <path d="M 340 298 H 578" class="save"/>
+  <text x="460" y="287" text-anchor="middle" class="body">读取 Session 并保存用户事件</text>
+
+  <text x="36" y="331" class="number">03</text>
+  <path d="M 340 342 H 818" class="line"/>
+  <text x="580" y="331" text-anchor="middle" class="body">创建调用及节点 Context</text>
+
+  <text x="36" y="375" class="number">04</text>
+  <path d="M 820 386 H 1058" class="line"/>
+  <text x="940" y="375" text-anchor="middle" class="body">指令、历史、工具声明</text>
+
+  <text x="36" y="419" class="number">05</text>
+  <path d="M 1060 430 H 822" class="line reply"/>
+  <text x="940" y="419" text-anchor="middle" class="body">FunctionCall</text>
+
+  <text x="36" y="463" class="number">06</text>
+  <path d="M 820 474 H 342" class="line reply"/>
+  <text x="580" y="463" text-anchor="middle" class="body">调用事件进入队列</text>
+
+  <text x="36" y="507" class="number">07</text>
+  <path d="M 340 518 H 578" class="save"/>
+  <text x="460" y="507" text-anchor="middle" class="body">保存非 partial 事件</text>
+
+  <text x="36" y="551" class="number">08</text>
+  <path d="M 340 562 H 122" class="line reply"/>
+  <text x="230" y="551" text-anchor="middle" class="body">yield 调用事件</text>
+
+  <text x="36" y="595" class="number">09</text>
+  <path d="M 820 606 H 1278" class="line"/>
+  <text x="1050" y="595" text-anchor="middle" class="body">工具参数及 ToolContext</text>
+
+  <text x="36" y="639" class="number">10</text>
+  <path d="M 1280 650 H 822" class="line reply"/>
+  <text x="1050" y="639" text-anchor="middle" class="body">实际函数返回值</text>
+
+  <text x="36" y="683" class="number">11</text>
+  <path d="M 820 694 H 342" class="line reply"/>
+  <text x="580" y="683" text-anchor="middle" class="body">FunctionResponse 事件</text>
+
+  <text x="36" y="727" class="number">12</text>
+  <path d="M 340 738 H 578" class="save"/>
+  <text x="460" y="727" text-anchor="middle" class="body">合并状态差量并记录事件</text>
+
+  <text x="36" y="771" class="number">13</text>
+  <path d="M 340 782 H 122" class="line reply"/>
+  <text x="230" y="771" text-anchor="middle" class="body">yield 工具结果</text>
+
+  <text x="36" y="815" class="number">14</text>
+  <path d="M 820 826 H 1058" class="line"/>
+  <text x="940" y="815" text-anchor="middle" class="body">包含工具结果的后续请求</text>
+
+  <text x="36" y="859" class="number">15</text>
+  <path d="M 1060 870 H 822" class="line reply"/>
+  <text x="940" y="859" text-anchor="middle" class="body">最终文字</text>
+
+  <text x="36" y="903" class="number">16</text>
+  <path d="M 820 914 H 342" class="line reply"/>
+  <text x="580" y="903" text-anchor="middle" class="body">回答事件</text>
+
+  <text x="36" y="947" class="number">17</text>
+  <path d="M 340 958 H 578" class="save"/>
+  <text x="460" y="947" text-anchor="middle" class="body">保存回答</text>
+
+  <text x="36" y="991" class="number">18</text>
+  <path d="M 340 1002 H 122" class="line reply"/>
+  <text x="230" y="991" text-anchor="middle" class="body">yield 回答并结束调用</text>
+
+  <text x="36" y="1082" class="note">折叠内部适配层；仅突出函数调用闭环，省略中间调度与插件事件。</text>
+  <text x="36" y="1112" class="note">模型为可替换接口，示例使用确定性替身；模型不会直接执行 Python。此图不涵盖实时、取消或断线重连。</text>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1100" viewBox="0 0 1200 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Google ADK：从应用入口到节点执行与事件保存</title>
+  <desc id="desc">应用通过 Runner 建立调用级 InvocationContext 和节点级 Context，Context 进入 NodeRunner。NodeRunner 执行 Workflow、LlmAgent 或函数节点，Workflow 继续调度图内节点。LlmAgent 经 LLM flow 调用模型和工具；Agent 与函数节点产生的 Event 进入队列，由同一 Runner 消费，非 partial 事件保存到 SessionService 后向应用 yield。Context 按需调用 Memory 与 Artifact。图展示 v2.10.0 的节点运行路径，其他 BaseAgent 仍有传统分支；分组表示职责，不表示继承、进程或安全隔离。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#526781"/></marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Noto Sans CJK SC', sans-serif; }
+      .title { font-size: 28px; font-weight: 700; fill: #13243b; }
+      .label { font-size: 20px; font-weight: 600; fill: #13243b; }
+      .body { font-size: 17px; fill: #475569; }
+      .small { font-size: 15px; fill: #64748b; }
+      .line { fill: none; stroke: #526781; stroke-width: 2; stroke-linejoin: round; marker-end: url(#arrow); }
+      .both { marker-start: url(#arrow); }
+      .optional { stroke-dasharray: 6 5; }
+    </style>
+  </defs>
+  <rect width="1200" height="1100" rx="20" fill="#f8fafc"/>
+  <text x="36" y="40" font-size="13" font-weight="700" letter-spacing="2" fill="#2563eb">01 / ARCHITECTURE</text>
+  <text x="36" y="77" class="title">从一次调用，到节点协作与事件保存</text>
+
+  <rect x="36" y="106" width="250" height="80" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="161" y="138" text-anchor="middle" class="label">应用 / CLI / Web</text>
+  <text x="161" y="164" text-anchor="middle" class="body">提交消息 · 消费事件流</text>
+  <path d="M 289 146 H 393" class="line"/>
+  <rect x="396" y="106" width="280" height="80" rx="12" fill="#2563eb"/>
+  <text x="536" y="138" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">Runner · 调用入口</text>
+  <text x="536" y="164" text-anchor="middle" font-size="17" fill="#dbeafe">run_async · 协调节点与服务</text>
+  <path d="M 679 146 H 797" class="line"/>
+  <rect x="800" y="106" width="364" height="80" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="982" y="138" text-anchor="middle" class="label">InvocationContext / Context</text>
+  <text x="982" y="164" text-anchor="middle" class="body">调用级信息 / 节点级执行视图</text>
+
+  <path d="M 800 174 H 756 V 282 H 600 V 375" class="line"/>
+  <text x="600" y="266" text-anchor="middle" class="body">Context.run_node</text>
+  <path d="M 982 189 V 227" class="line optional"/>
+  <rect x="800" y="230" width="364" height="72" rx="12" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="982" y="259" text-anchor="middle" class="label">Memory / Artifact 服务</text>
+  <text x="982" y="285" text-anchor="middle" class="body">按需显式调用 · 记忆 / 内容与版本</text>
+
+  <rect x="36" y="336" width="1128" height="282" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="60" y="368" class="label">节点运行时</text>
+  <text x="1140" y="368" text-anchor="end" class="small">职责分组 · 非继承或安全边界</text>
+  <rect x="450" y="378" width="300" height="78" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="600" y="409" text-anchor="middle" class="label">NodeRunner</text>
+  <text x="600" y="435" text-anchor="middle" class="body">建立子 Context · 调用 BaseNode.run</text>
+
+  <path d="M 447 417 H 225 V 507" class="line both"/>
+  <text x="325" y="401" text-anchor="middle" class="body">执行 / 图内调度</text>
+  <path d="M 600 459 V 507" class="line"/>
+  <path d="M 753 417 H 995 V 507" class="line"/>
+  <rect x="90" y="510" width="270" height="78" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="225" y="541" text-anchor="middle" class="label">Workflow</text>
+  <text x="225" y="567" text-anchor="middle" class="body">按边推进 · 再调度图内节点</text>
+  <rect x="465" y="510" width="270" height="78" rx="12" fill="#2563eb"/>
+  <text x="600" y="541" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">LlmAgent / LLM flow</text>
+  <text x="600" y="567" text-anchor="middle" font-size="17" fill="#dbeafe">节点包装器衔接模型与工具循环</text>
+  <rect x="870" y="510" width="250" height="78" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="995" y="541" text-anchor="middle" class="label">函数节点</text>
+  <text x="995" y="567" text-anchor="middle" class="body">确定函数 · 路由与暂停信号</text>
+
+  <path d="M 520 591 V 650 H 450 V 683" class="line both"/>
+  <path d="M 680 591 V 650 H 830 V 683" class="line both"/>
+  <rect x="320" y="686" width="260" height="84" rx="12" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="450" y="719" text-anchor="middle" class="label">BaseLlm · 模型适配器</text>
+  <text x="450" y="746" text-anchor="middle" class="body">请求 / 响应 · 可替换模型</text>
+  <rect x="680" y="686" width="300" height="84" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="830" y="719" text-anchor="middle" class="label">工具 / ToolContext</text>
+  <text x="830" y="746" text-anchor="middle" class="body">执行实际函数 · 返回工具结果</text>
+
+  <path d="M 600 591 V 819" class="line"/>
+  <text x="616" y="800" class="body">产出事件</text>
+  <path d="M 995 591 V 861 H 753" class="line"/>
+  <rect x="450" y="822" width="300" height="78" rx="12" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="600" y="853" text-anchor="middle" class="label">Event · 调用事件队列</text>
+  <text x="600" y="879" text-anchor="middle" class="body">内容 · 输出 · EventActions</text>
+  <path d="M 600 903 V 939" class="line"/>
+  <rect x="450" y="942" width="300" height="78" rx="12" fill="#2563eb"/>
+  <text x="600" y="973" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">Runner · 事件消费</text>
+  <text x="600" y="999" text-anchor="middle" font-size="17" fill="#dbeafe">经插件处理 · 保存后 yield 给应用</text>
+  <path d="M 753 981 H 867" class="line"/>
+  <text x="810" y="962" text-anchor="middle" class="small">非 partial</text>
+  <rect x="870" y="942" width="294" height="78" rx="12" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="1017" y="973" text-anchor="middle" class="label">SessionService</text>
+  <text x="1017" y="999" text-anchor="middle" class="body">会话历史 · 合并状态差量</text>
+
+  <path d="M 60 867 H 110" class="line"/>
+  <text x="124" y="873" class="body">调用 / 事件流</text>
+  <path d="M 60 913 H 110" class="line optional"/>
+  <text x="124" y="919" class="body">按需服务访问</text>
+  <text x="60" y="978" class="small">两个 Runner 卡片表示同一对象的两项职责</text>
+  <text x="36" y="1060" class="body">v2.10.0：根 LlmAgent 与非 BaseAgent 节点走此路径；其余 BaseAgent 保留传统执行分支。</text>
+  <text x="36" y="1086" class="small">基线 ADK v2.10.0 · 53b3706e · 默认非实时调用；Workflow 本身也是一个节点。</text>
+</svg>

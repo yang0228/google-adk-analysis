@@ -17,6 +17,11 @@
 
 图中“节点与 LLM flow”折叠了内部适配层。模型是可替换接口；示例用确定性替身。每批可见事件均由 Runner 消费，图仅突出函数调用闭环，省略中间调度与插件事件。
 
+![ADK 非实时请求时序：应用、Runner、会话服务、节点与模型流程、模型接口和函数工具依次完成用户消息保存、模型工具调用、真实函数执行、工具结果回传、最终回答保存与转交应用的十八步交互](../../assets/diagrams/request-lifecycle.svg)
+
+<details>
+<summary>查看 Mermaid 图定义</summary>
+
 ```mermaid
 sequenceDiagram
     participant U as 应用
@@ -44,6 +49,8 @@ sequenceDiagram
     R->>S: 保存回答
     R-->>U: yield 回答并结束调用
 ```
+
+</details>
 
 文字替代：用户消息先进入会话；节点把模型的工具请求转交真实工具；工具结果回到模型；Runner 沿途保存事件并转交应用。模型不会直接执行 Python。
 

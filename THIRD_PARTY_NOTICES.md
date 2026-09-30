@@ -1,6 +1,6 @@
 # 来源、署名与第三方许可
 
-本仓库原创中文分析、Mermaid 图、验证脚本与示例以 [Apache-2.0](LICENSE) 提供。原创内容的版权归相应贡献者；Google、ADK 及各框架名称属于各自权利人，不表示授权、背书或隶属关系。
+本仓库原创中文分析、Mermaid 与 SVG 图、验证脚本与示例以 [Apache-2.0](LICENSE) 提供。原创内容的版权归相应贡献者；Google、ADK 及各框架名称属于各自权利人，不表示授权、背书或隶属关系。
 
 ## Google ADK 参考材料
 
@@ -13,6 +13,8 @@
 示例 01/02 是针对公开 API 编写的本地演示；工具天气数据是人工固定值。所有图均按源码重新绘制，没有复制官方品牌图。源码片段之外的事实与分析出处见[证据索引](docs/references.md)。
 
 ## 竞品与工具依赖
+
+SVG 架构图的配色、圆角卡片与标题层级参考 [yang0228/deepseek-harness-analysis 的架构图](https://github.com/yang0228/deepseek-harness-analysis/tree/main/assets/diagrams)。节点、连线、布局与说明按本仓库 ADK 分析重新绘制；Mermaid 定义保留在文档的折叠区中。
 
 竞品章节链接各项目固定版本的官方源码和文档，以原创文字归纳，没有引入其运行时代码。Python/Node 依赖由各自包管理器安装，许可随其发行包；本仓库不重新许可第三方包，不提交依赖目录或源码快照。uv.lock 和 package-lock.json 用于固定本次解析版本。
 

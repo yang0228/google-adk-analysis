@@ -23,6 +23,11 @@ ADK 是以代码定义 Agent、工具及编排的开发工具包。Agent 声明�
 
 ## 架构总览
 
+![Google ADK 架构：应用经 Runner 和 Context 驱动 NodeRunner，Workflow 调度 Agent 与函数节点，Agent 调用模型和工具，事件回到同一 Runner 保存会话；Memory 和 Artifact 按需显式访问。](assets/diagrams/architecture.svg)
+
+<details>
+<summary>查看 Mermaid 图定义</summary>
+
 ```mermaid
 flowchart TB
     A["应用 / CLI / Web"] --> R["Runner：调用与服务协调"]
@@ -40,6 +45,8 @@ flowchart TB
     R --> S["SessionService：历史与状态"]
     C -. "按需调用" .-> X["Memory / Artifact 服务"]
 ```
+
+</details>
 
 实线表示调用或事件流，虚线表示可选服务访问；不是继承图。应用经 Runner 驱动节点，Workflow 调度图内节点，Agent 调用模型和工具，事件回到 Runner 保存到会话。具体调用分支见[架构导航](docs/architecture/index.md)。
 

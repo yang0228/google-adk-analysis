@@ -4,6 +4,11 @@
 
 ## 状态边界图
 
+![状态差量进入事件，Runner 提交非 partial 事件，会话服务按前缀分配状态范围并过滤 temp 持久化差量；Memory 和 Artifact 由 Context 显式独立调用](../../assets/diagrams/state-and-events.svg)
+
+<details>
+<summary>查看 Mermaid 图定义</summary>
+
 ```mermaid
 flowchart TB
     C["当前节点 Context"] --> V["State 视图：当前值与 delta"]
@@ -18,6 +23,8 @@ flowchart TB
     C -. "显式调用服务" .-> M["Memory：跨会话存取与检索"]
     C -. "显式调用服务" .-> F["Artifact：内容与版本"]
 ```
+
+</details>
 
 实线表示状态提交或保存路径，虚线表示非持久临时值或另行调用的服务；Memory、Artifact 不会因普通 State 写入而自动更新。文字替代：节点提交差量，服务按前缀分配范围，历史记录支持后续执行；长期记忆和文件保存各走自己的接口。
 

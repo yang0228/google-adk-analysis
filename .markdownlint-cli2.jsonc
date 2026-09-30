@@ -15,6 +15,9 @@
     "MD024": {
       "siblings_only": true
     },
+    "MD033": {
+      "allowed_elements": ["details", "summary"]
+    },
     "MD060": false
   }
 }
